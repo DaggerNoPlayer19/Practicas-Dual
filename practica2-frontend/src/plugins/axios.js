@@ -1,0 +1,37 @@
+import axios from 'axios'
+
+export const api = axios.create({
+  baseURL: 'http://127.0.0.1:8000/api',
+})
+
+let interceptorsInitialized = false
+
+export const setupAxiosInterceptors = (router) => {
+  if (interceptorsInitialized) return
+  interceptorsInitialized = true
+
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token')
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+  })
+
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token')
+
+        if (router.currentRoute.value.name !== 'login') {
+          router.push({ name: 'login' })
+        }
+      }
+
+      return Promise.reject(error)
+    },
+  )
+}
