@@ -54,6 +54,20 @@ def shade_cell(cell, fill):
     tc_pr.append(shd)
 
 
+def set_image_name(run, name):
+    drawing = run._r.drawing_lst[0]
+    ns = {
+        "wp": "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing",
+        "pic": "http://schemas.openxmlformats.org/drawingml/2006/picture",
+    }
+    doc_pr = drawing.find(".//wp:docPr", namespaces=ns)
+    if doc_pr is not None:
+        doc_pr.set("name", name)
+    c_nv_pr = drawing.find(".//pic:cNvPr", namespaces=ns)
+    if c_nv_pr is not None:
+        c_nv_pr.set("name", name)
+
+
 def add_heading(doc, text, level=1):
     p = doc.add_paragraph(style=f"Heading {level}")
     p.add_run(text)
@@ -91,15 +105,17 @@ def add_caption(doc, text):
     return p
 
 
-def add_evidence(doc, number, title, image_name, description):
+def add_evidence(doc, number, title, image_name, description, caption_text):
     add_heading(doc, f"Evidencia {number}. {title}", level=2)
     add_body(doc, description)
     img = CAPTIONS / image_name
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     set_paragraph_spacing(p, before=3, after=0)
-    p.add_run().add_picture(str(img), width=Inches(6.1))
-    add_caption(doc, image_name)
+    r = p.add_run()
+    r.add_picture(str(img), width=Inches(6.1))
+    set_image_name(r, caption_text)
+    add_caption(doc, caption_text)
 
 
 def configure_document(doc):
@@ -203,16 +219,16 @@ def main():
 
     add_heading(doc, "3. Evidencias", level=1)
     evidence = [
-        (1, "Catalogo inicial", "practica7_01_catalogo_inicial.png", "Vista principal del catalogo con filtros laterales, tarjetas de productos y controles de paginacion visibles al abrir la aplicacion."),
-        (2, "Busqueda por nombre", "practica7_02_busqueda_ab.png", "El campo de busqueda contiene el termino 'ab' y el listado se reduce al producto correspondiente, mostrando la sincronizacion del filtro con la vista."),
-        (3, "Filtro por categoria", "practica7_03_categoria_hogar.png", "Se selecciono la categoria 'Hogar' desde el panel lateral para validar el filtrado por categoria desde la API."),
-        (4, "Rango de precios", "practica7_04_rango_precios.png", "Se aplico un rango de precios entre 1000 y 1200 para comprobar que el catalogo filtra por limites minimo y maximo."),
-        (5, "Paginacion", "practica7_05_paginacion_pagina2.png", "Se navego a la pagina 2 del catalogo para evidenciar la paginacion server-side y el conteo total de paginas."),
-        (6, "Detalle de producto", "practica7_06_detalle_producto.png", "Se abrio el detalle del producto seleccionado para verificar la ruta dinamica y la presentacion de la categoria asociada."),
-        (7, "Respuesta JSON de API", "practica7_07_api_json.png", "Se consulto el endpoint REST con filtros en la URL y se documento la respuesta JSON correcta del backend."),
+        (1, "Catalogo inicial", "practica7_01_catalogo_inicial.png", "Vista principal del catalogo con filtros laterales, tarjetas de productos y controles de paginacion visibles al abrir la aplicacion.", "Figura 1. Catalogo inicial de productos."),
+        (2, "Busqueda por nombre", "practica7_02_busqueda_ab.png", "El campo de busqueda contiene el termino 'ab' y el listado se reduce al producto correspondiente.", "Figura 2. Resultado de busqueda por texto."),
+        (3, "Filtro por categoria", "practica7_03_categoria_hogar.png", "Se selecciono la categoria 'Hogar' desde el panel lateral para validar el filtrado por categoria.", "Figura 3. Aplicacion de filtro por categoria."),
+        (4, "Rango de precios", "practica7_04_rango_precios.png", "Se aplico un rango de precios entre 1000 y 1200 para comprobar que el catalogo filtra por limites minimo y maximo.", "Figura 4. Aplicacion de filtro por rango de precio."),
+        (5, "Paginacion", "practica7_05_paginacion_pagina2.png", "Se navego a la pagina 2 del catalogo para mostrar la paginacion server-side y el conteo total de paginas.", "Figura 5. Navegacion a la pagina 2."),
+        (6, "Detalle de producto", "practica7_06_detalle_producto.png", "Se abrio el detalle del producto seleccionado para verificar la ruta dinamica y la categoria asociada.", "Figura 6. Vista detallada del producto."),
+        (7, "Respuesta JSON de API", "practica7_07_api_json.png", "Se consulto el endpoint REST con filtros en la URL y se documento la respuesta JSON del backend.", "Figura 7. Respuesta JSON del endpoint de productos."),
     ]
-    for idx, title, img, desc in evidence:
-        add_evidence(doc, idx, title, img, desc)
+    for idx, title, img, desc, caption in evidence:
+        add_evidence(doc, idx, title, img, desc, caption)
         if idx != len(evidence):
             doc.add_page_break()
 
