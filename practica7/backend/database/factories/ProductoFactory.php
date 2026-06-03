@@ -14,10 +14,33 @@ class ProductoFactory extends Factory
 
     public function definition(): array
     {
+        $nombres = [
+            'Laptop Ultrabook',
+            'Monitor LED',
+            'Teclado Inalambrico',
+            'Mouse Ergonomico',
+            'Tablet Android',
+            'Audifonos Bluetooth',
+            'Bocina Portatil',
+            'Camara Digital',
+            'Cargador Rapido',
+            'Disco SSD',
+            'Sillon Modular',
+            'Lampara LED',
+            'Juego de Sartenes',
+            'Organizador de Cocina',
+            'Mancuernas Ajustables',
+            'Tenis Deportivos',
+            'Playera Deportiva',
+            'Termo Acero',
+            'Cuerda para Saltar',
+            'Mochila Urbana',
+        ];
+
         return [
-            'nombre' => fake()->unique()->words(3, true),
-            'descripcion' => fake()->sentence(10),
-            'precio' => fake()->randomFloat(2, 99, 29999),
+            'nombre' => fake()->unique()->randomElement($nombres),
+            'descripcion' => fake()->sentence(6),
+            'precio' => fake()->randomFloat(2, 199, 24999),
             'stock' => fake()->numberBetween(1, 80),
             'imagen' => null,
             'categoria_id' => null,

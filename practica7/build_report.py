@@ -220,7 +220,7 @@ def main():
     add_heading(doc, "3. Evidencias", level=1)
     evidence = [
         (1, "Catalogo inicial", "practica7_01_catalogo_inicial.png", "Vista principal del catalogo con filtros laterales, tarjetas de productos y controles de paginacion visibles al abrir la aplicacion.", "Figura 1. Catalogo inicial de productos."),
-        (2, "Busqueda por nombre", "practica7_02_busqueda_ab.png", "El campo de busqueda contiene el termino 'ab' y el listado se reduce al producto correspondiente.", "Figura 2. Resultado de busqueda por texto."),
+        (2, "Busqueda por nombre", "practica7_02_busqueda_laptop.png", "El campo de busqueda contiene el termino 'Laptop' y el listado se reduce a los resultados relacionados.", "Figura 2. Resultado de busqueda por texto."),
         (3, "Filtro por categoria", "practica7_03_categoria_hogar.png", "Se selecciono la categoria 'Hogar' desde el panel lateral para validar el filtrado por categoria.", "Figura 3. Aplicacion de filtro por categoria."),
         (4, "Rango de precios", "practica7_04_rango_precios.png", "Se aplico un rango de precios entre 1000 y 1200 para comprobar que el catalogo filtra por limites minimo y maximo.", "Figura 4. Aplicacion de filtro por rango de precio."),
         (5, "Paginacion", "practica7_05_paginacion_pagina2.png", "Se navego a la pagina 2 del catalogo para mostrar la paginacion server-side y el conteo total de paginas.", "Figura 5. Navegacion a la pagina 2."),
