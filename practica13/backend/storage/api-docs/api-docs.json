@@ -1,0 +1,251 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Practica 13 API Versioning y Swagger",
+        "description": "API REST documentada con OpenAPI 3.0 y versionamiento /api/v1 y /api/v2",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Servidor local"
+        }
+    ],
+    "paths": {
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Autenticacion"
+                ],
+                "summary": "Registrar un usuario",
+                "operationId": "ad77fe138bcb384ad65d167d5c8d1cc0",
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado"
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Autenticacion"
+                ],
+                "summary": "Iniciar sesion",
+                "operationId": "bae68d1c55329ecb6e41f48285840c8f",
+                "responses": {
+                    "200": {
+                        "description": "Autenticacion exitosa"
+                    },
+                    "401": {
+                        "description": "Credenciales incorrectas"
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Autenticacion"
+                ],
+                "summary": "Cerrar sesion",
+                "operationId": "c5cdd87fdbf9d0f95dede875bd023dec",
+                "responses": {
+                    "200": {
+                        "description": "Sesion cerrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/me": {
+            "get": {
+                "tags": [
+                    "Autenticacion"
+                ],
+                "summary": "Obtener usuario autenticado",
+                "operationId": "13b43df400e475a157538f73617b8c3d",
+                "responses": {
+                    "200": {
+                        "description": "Usuario actual"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/pedidos": {
+            "post": {
+                "tags": [
+                    "Pedidos"
+                ],
+                "summary": "Registrar un pedido",
+                "operationId": "9ac38a0301bf52d679a30562d7588577",
+                "responses": {
+                    "201": {
+                        "description": "Pedido creado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/pedidos/{pedido}": {
+            "get": {
+                "tags": [
+                    "Pedidos"
+                ],
+                "summary": "Consultar un pedido",
+                "operationId": "f1ab44575bbc487b45c15c364af56db1",
+                "responses": {
+                    "200": {
+                        "description": "Pedido encontrado"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Listar productos",
+                "operationId": "2f880536579b0d60fc19b46081442e63",
+                "responses": {
+                    "200": {
+                        "description": "Listado de productos"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Crear un producto",
+                "operationId": "a9087b06523a4206a42cf63c83ffddf1",
+                "responses": {
+                    "201": {
+                        "description": "Producto creado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/productos/{id}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Consultar un producto",
+                "operationId": "ded37ec6cea76bf6bbdeac0c648c3bb6",
+                "responses": {
+                    "200": {
+                        "description": "Producto encontrado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Actualizar un producto",
+                "operationId": "dea115009a1a4711ce9d445c1b83c068",
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Eliminar un producto",
+                "operationId": "26d6bed6833b1d1bccca42b409fe84d8",
+                "responses": {
+                    "204": {
+                        "description": "Producto eliminado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Listar productos con busqueda y paginacion",
+                "operationId": "a234f0554c91052cd2b87d4ab88f5905",
+                "responses": {
+                    "200": {
+                        "description": "Listado de productos filtrado"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "Token",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticacion",
+            "description": "Registro, acceso y cierre de sesion"
+        },
+        {
+            "name": "Productos",
+            "description": "Operaciones CRUD y consulta de productos"
+        },
+        {
+            "name": "Pedidos",
+            "description": "Creacion y consulta de pedidos"
+        }
+    ]
+}
