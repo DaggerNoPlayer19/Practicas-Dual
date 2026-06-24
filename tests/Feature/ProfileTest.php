@@ -21,6 +21,21 @@ class ProfileTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_perfil_page_is_displayed(): void
+    {
+        $user = User::factory()->create([
+            'telefono' => '5551234567',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/perfil');
+
+        $response
+            ->assertOk()
+            ->assertSee('5551234567');
+    }
+
     public function test_profile_information_can_be_updated(): void
     {
         $user = User::factory()->create();
@@ -30,6 +45,7 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'telefono' => '5551234567',
             ]);
 
         $response
@@ -40,6 +56,7 @@ class ProfileTest extends TestCase
 
         $this->assertSame('Test User', $user->name);
         $this->assertSame('test@example.com', $user->email);
+        $this->assertSame('5551234567', $user->telefono);
         $this->assertNull($user->email_verified_at);
     }
 
@@ -52,6 +69,7 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => $user->email,
+                'telefono' => $user->telefono,
             ]);
 
         $response

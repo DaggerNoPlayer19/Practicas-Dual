@@ -1,0 +1,12 @@
+
+  GET|HEAD        admin/dashboard .................................. admin.dashboard › Admin\DashboardController@index
+  GET|HEAD        dashboard ............................................................ dashboard › routes/web.php:15
+  GET|HEAD        login ........................................... login › Auth\AuthenticatedSessionController@create
+  POST            login .................................................... Auth\AuthenticatedSessionController@store
+  POST            logout ........................................ logout › Auth\AuthenticatedSessionController@destroy
+  GET|HEAD        perfil .................................................................. perfil › routes/web.php:20
+  GET|HEAD        register ........................................... register › Auth\RegisteredUserController@create
+  POST            register ....................................................... Auth\RegisteredUserController@store
+
+
+
