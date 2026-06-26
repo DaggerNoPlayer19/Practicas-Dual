@@ -34,6 +34,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('attachments.destroy');
 });
 
+Route::middleware(['auth', 'verified', 'verificar.rol:admin'])->prefix('admin')->name('admin.demo.')->group(function () {
+    Route::get('/panel', function () {
+        return view('admin.panel');
+    })->name('panel');
+});
+
+Route::middleware(['auth', 'verified', 'verificar.rol:editor'])->prefix('editor')->name('editor.demo.')->group(function () {
+    Route::get('/articulos', function () {
+        return view('editor.articulos');
+    })->name('articulos');
+});
+
+Route::view('/movil', 'movil')->name('movil');
+
+Route::middleware(['registrar.peticion', 'solo.celular'])->prefix('celular')->name('celular.')->group(function () {
+    Route::get('/noticias', function () {
+        return view('practica4.celular', [
+            'titulo' => 'Noticias para celular',
+            'descripcion' => 'Esta ruta demuestra la redirección automática cuando el User-Agent pertenece a un teléfono.',
+        ]);
+    })->name('noticias');
+
+    Route::get('/servicios', function () {
+        return view('practica4.celular', [
+            'titulo' => 'Servicios para celular',
+            'descripcion' => 'El middleware permite el acceso en escritorio y redirige a /movil desde dispositivos móviles.',
+        ]);
+    })->name('servicios');
+
+    Route::get('/galeria', function () {
+        return view('practica4.celular', [
+            'titulo' => 'Galería para celular',
+            'descripcion' => 'Se aplicó SoloCelular en tres rutas distintas, como pide la práctica.',
+        ]);
+    })->name('galeria');
+});
+
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('role:admin')

@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'verificar.rol' => \App\Http\Middleware\VerificarRol::class,
+            'registrar.peticion' => \App\Http\Middleware\RegistrarPeticion::class,
+            'solo.celular' => \App\Http\Middleware\SoloCelular::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
