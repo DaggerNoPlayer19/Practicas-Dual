@@ -11,6 +11,28 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
+    private function tokenAllows(Request $request, string $ability): bool
+    {
+        $token = $request->user()?->currentAccessToken();
+
+        if (!$token) {
+            return false;
+        }
+
+        return $token->can($ability);
+    }
+
+    private function denyIfMissingAbility(Request $request, string $ability): ?JsonResponse
+    {
+        if ($this->tokenAllows($request, $ability)) {
+            return null;
+        }
+
+        return response()->json([
+            'message' => "Tu token no tiene el permiso '{$ability}' para esta accion.",
+        ], 403);
+    }
+
     public function index(Request $request): AnonymousResourceCollection
     {
         $perPage = max(1, min((int) $request->query('per_page', 10), 50));
@@ -23,8 +45,12 @@ class ProductoController extends Controller
         return ProductoResource::collection($query->paginate($perPage));
     }
 
-    public function store(Request $request): ProductoResource
+    public function store(Request $request): ProductoResource|JsonResponse
     {
+        if ($response = $this->denyIfMissingAbility($request, 'crear')) {
+            return $response;
+        }
+
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255'],
             'descripcion' => ['nullable', 'string'],
@@ -59,6 +85,10 @@ class ProductoController extends Controller
             return response()->json(['message' => 'Producto no encontrado'], 404);
         }
 
+        if ($response = $this->denyIfMissingAbility($request, 'editar')) {
+            return $response;
+        }
+
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:255'],
             'descripcion' => ['nullable', 'string'],
@@ -80,12 +110,16 @@ class ProductoController extends Controller
         return new ProductoResource($producto->refresh());
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(Request $request, string $id): JsonResponse
     {
         $producto = Producto::find($id);
 
         if (!$producto) {
             return response()->json(['message' => 'Producto no encontrado'], 404);
+        }
+
+        if ($response = $this->denyIfMissingAbility($request, 'eliminar')) {
+            return $response;
         }
 
         if ($producto->imagen) {

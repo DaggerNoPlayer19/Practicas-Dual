@@ -6,15 +6,46 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
+    private const TOKEN_ABILITY_SETS = [
+        'read' => ['ver'],
+        'write' => ['ver', 'crear', 'editar', 'eliminar'],
+    ];
+
+    private function resolveAbilities(?string $tokenType, ?array $abilities = null): array
+    {
+        if (is_array($abilities) && $abilities !== []) {
+            $normalized = collect($abilities)
+                ->map(fn ($ability) => trim((string) $ability))
+                ->filter()
+                ->unique()
+                ->values()
+                ->all();
+
+            $invalid = array_diff($normalized, self::TOKEN_ABILITY_SETS['write']);
+
+            if ($invalid !== []) {
+                abort(422, 'Abilities invalidas: '.implode(', ', $invalid));
+            }
+
+            return $normalized;
+        }
+
+        return self::TOKEN_ABILITY_SETS[$tokenType ?? 'write'] ?? self::TOKEN_ABILITY_SETS['write'];
+    }
+
     public function register(Request $request): JsonResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'token_type' => ['nullable', Rule::in(array_keys(self::TOKEN_ABILITY_SETS))],
+            'abilities' => ['nullable', 'array'],
+            'abilities.*' => ['string'],
         ]);
 
         $user = User::create([
@@ -24,11 +55,13 @@ class AuthController extends Controller
             'is_admin' => false,
         ]);
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $abilities = $this->resolveAbilities($data['token_type'] ?? null, $data['abilities'] ?? null);
+        $token = $user->createToken('auth-token', $abilities)->plainTextToken;
 
         return response()->json([
             'token' => $token,
             'user' => $user,
+            'abilities' => $abilities,
         ], 201);
     }
 
@@ -37,6 +70,9 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
+            'token_type' => ['nullable', Rule::in(array_keys(self::TOKEN_ABILITY_SETS))],
+            'abilities' => ['nullable', 'array'],
+            'abilities.*' => ['string'],
         ]);
 
         $user = User::where('email', $credentials['email'])->first();
@@ -47,11 +83,13 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $abilities = $this->resolveAbilities($credentials['token_type'] ?? null, $credentials['abilities'] ?? null);
+        $token = $user->createToken('auth-token', $abilities)->plainTextToken;
 
         return response()->json([
             'token' => $token,
             'user' => $user,
+            'abilities' => $abilities,
         ], 200);
     }
 
@@ -66,6 +104,9 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json($request->user(), 200);
+        return response()->json([
+            'user' => $request->user(),
+            'abilities' => $request->user()?->currentAccessToken()?->abilities ?? [],
+        ], 200);
     }
 }

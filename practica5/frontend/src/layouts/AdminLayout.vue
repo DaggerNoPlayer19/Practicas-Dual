@@ -17,6 +17,7 @@ const cerrarSesion = async () => {
       <h2>Panel Admin</h2>
       <p class="muted">Usuario: {{ auth.user?.name || '-' }}</p>
       <p class="muted">Rol: {{ auth.user?.is_admin ? 'admin' : 'usuario' }}</p>
+      <p class="muted">Abilities: {{ auth.tokenAbilities.length ? auth.tokenAbilities.join(', ') : 'sin datos' }}</p>
 
       <nav class="nav-col">
         <RouterLink to="/admin">Dashboard</RouterLink>

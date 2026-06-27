@@ -10,6 +10,7 @@ const router = useRouter()
 const form = reactive({
   email: 'admin@tienda.com',
   password: 'Admin1234',
+  token_type: 'write',
 })
 
 const notice = ref('')
@@ -38,9 +39,17 @@ const onSubmit = async () => {
       <h1>Iniciar sesion</h1>
       <p class="muted">Acceso con Sanctum. Usuario demo admin precargado.</p>
       <p class="muted">Email: admin@tienda.com | Password: Admin1234</p>
+      <p class="muted">Token por defecto: escritura. Cambia a solo lectura para probar permisos limitados.</p>
       <p v-if="route.query.redirect" class="muted">Redireccion pendiente: {{ route.query.redirect }}</p>
 
       <form class="form" @submit.prevent="onSubmit">
+        <label>
+          Tipo de token
+          <select v-model="form.token_type" class="input">
+            <option value="read">Solo lectura</option>
+            <option value="write">Escritura</option>
+          </select>
+        </label>
         <label>
           Correo
           <input v-model="form.email" class="input" type="email" required />

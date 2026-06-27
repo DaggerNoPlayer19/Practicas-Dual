@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: localStorage.getItem(TOKEN_KEY) || '',
     user: JSON.parse(localStorage.getItem(USER_KEY) || 'null'),
+    tokenAbilities: JSON.parse(localStorage.getItem('practica5_abilities') || '[]'),
     loading: false,
     error: '',
   }),
@@ -18,19 +19,23 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    setSession(token, user) {
+    setSession(token, user, abilities = []) {
       this.token = token
       this.user = user
+      this.tokenAbilities = abilities
       localStorage.setItem(TOKEN_KEY, token)
       localStorage.setItem(USER_KEY, JSON.stringify(user))
+      localStorage.setItem('practica5_abilities', JSON.stringify(abilities))
     },
 
     clearSession() {
       this.token = ''
       this.user = null
+      this.tokenAbilities = []
       this.error = ''
       localStorage.removeItem(TOKEN_KEY)
       localStorage.removeItem(USER_KEY)
+      localStorage.removeItem('practica5_abilities')
     },
 
     async fetchUser() {
@@ -40,8 +45,10 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         const { data } = await api.get('/me')
-        this.user = data
-        localStorage.setItem(USER_KEY, JSON.stringify(data))
+        this.user = data.user
+        this.tokenAbilities = data.abilities || []
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+        localStorage.setItem('practica5_abilities', JSON.stringify(data.abilities || []))
       } catch {
         this.clearSession()
       }
@@ -53,7 +60,7 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         const { data } = await api.post('/login', payload)
-        this.setSession(data.token, data.user)
+        this.setSession(data.token, data.user, data.abilities || [])
         return true
       } catch (error) {
         this.error = getApiError(error, 'No se pudo iniciar sesion.')
@@ -69,7 +76,7 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         const { data } = await api.post('/register', payload)
-        this.setSession(data.token, data.user)
+        this.setSession(data.token, data.user, data.abilities || [])
         return true
       } catch (error) {
         this.error = getApiError(error, 'No se pudo registrar usuario.')

@@ -1,8 +1,8 @@
-# Frontend - Practica 05
+﻿# Frontend - Practica 05
 
 ## Requisitos
 - Node.js 20+
-- Backend corriendo en `http://127.0.0.1:8000`
+- Backend corriendo en `http://127.0.0.1:8001`
 
 ## Instalacion
 1. Entrar a carpeta frontend:
@@ -19,14 +19,18 @@
 2. Iniciar sesion con:
    - `admin@tienda.com`
    - `Admin1234`
-3. Ir a `/admin/nuevo` para crear productos con imagen.
-4. Ver productos e imagenes en `/catalogo`.
-5. Agregar productos al carrito y validar persistencia recargando.
+3. Elegir el tipo de token:
+   - `Solo lectura` para probar bloqueo de permisos.
+   - `Escritura` para realizar CRUD completo.
+4. Ir a `/admin/nuevo` para crear productos con imagen.
+5. Ver productos e imagenes en `/catalogo`.
+6. Agregar productos al carrito y validar persistencia recargando.
 
 ## Funcionalidades destacadas
 - Vue Router: rutas publicas, dinamicas, privadas y 404.
 - Pinia: `auth` y `carrito`.
 - Carrito persistente en `localStorage`.
 - Subida de imagen con `FormData` y preview local.
+- Selector de abilities para emitir tokens de lectura o escritura.
 - Placeholder de imagen:
   - `public/img/placeholder.png`
