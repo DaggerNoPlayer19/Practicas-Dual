@@ -4,6 +4,10 @@
 - Node.js 20+
 - Backend corriendo en `http://127.0.0.1:8000`
 
+## API
+- En desarrollo, Vite proxya `/api` hacia `http://127.0.0.1:8000`.
+- En produccion, la SPA usa `/api` en el mismo dominio donde se sirve la app.
+
 ## Instalacion
 1. Entrar a carpeta frontend:
    - `cd frontend`
@@ -13,6 +17,10 @@
    - `npm run dev -- --host 127.0.0.1 --port 5173`
 4. Abrir en navegador:
    - `http://127.0.0.1:5173`
+
+## Produccion
+- Para desplegar la SPA, ejecuta `npm run build`.
+- El resultado queda en `dist/` y es el que consume Laravel en produccion.
 
 ## Flujo recomendado de prueba
 1. Ir a `/login`.

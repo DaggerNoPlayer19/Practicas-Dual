@@ -23,6 +23,14 @@
 7. Iniciar servidor:
    - `php artisan serve --host=127.0.0.1 --port=8000`
 
+## Despliegue web
+- La aplicacion publica de Vue se sirve desde `frontend/dist` por medio de las rutas web de Laravel.
+- Antes de probar `/`, `/login`, `/catalogo` o `/admin`, compila el frontend con:
+  - `cd ../frontend`
+  - `npm install`
+  - `npm run build`
+- Si cambias el frontend, vuelve a ejecutar `npm run build` para regenerar `dist/`.
+
 ## Endpoints principales
 - Publicos:
   - `GET /api/productos`

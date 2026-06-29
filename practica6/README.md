@@ -22,4 +22,5 @@ Estructura:
 ## Ejecucion rapida
 1. Configurar y levantar backend (ver `backend/README.md`).
 2. Configurar y levantar frontend (ver `frontend/README.md`).
-3. Abrir `http://127.0.0.1:5173`.
+3. Compilar el frontend con `npm run build` dentro de `frontend/`.
+4. Abrir la aplicacion desde la URL del servidor configurado en produccion.
